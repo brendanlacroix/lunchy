@@ -18,7 +18,7 @@ module.exports = (function() {
   const Foursquare = require('foursquare-venues');
   const foursquare = new Foursquare(process.env.FOURSQUARE_ID, process.env.FOURSQUARE_SECRET);
 
-  const Restaurant = require('./models/restaurant.js');
+  const restaurantHelpers = require('./restaurant_helpers.js');
 
   let exchanges = {};
 
@@ -59,6 +59,11 @@ module.exports = (function() {
         return;
       }
 
+      if (text.toLowerCase() === 'pick') {
+        this._pickRestaurant();
+        return;
+      }
+
       if (this._findingRestaurant) {
         this._findRestaurant(text);
       } else if (this._confirmingRestaurant) {
@@ -79,6 +84,24 @@ module.exports = (function() {
 
     _speak(message) {
       this._channel.send('@' + this._username + ': ' + message);
+    }
+
+    _pickRestaurant() {
+      var _this = this;
+
+      restaurantHelpers.pick(function(error, restaurant) {
+        _this._speak('You\'re going to ' + restaurant.id + '! Woo! (I\'m marking this as visited, so if you don\'t go this week don\'t expect to see it pop up again soon...)');
+
+        restaurantHelpers.updateLastVisited(restaurant, function(error, body) {
+          if (error) {
+            _this._speak('Err... looks like something went wrong. Try again?');
+            _this.destroy();
+            return console.error(error);
+          }
+
+          console.log('Updated last_visited of', restaurant.id);
+        });
+      });
     }
 
     _findRestaurant(restaurantName) {
@@ -150,7 +173,7 @@ module.exports = (function() {
     _addRestaurant(restaurantName) {
       var _this = this;
 
-      Restaurant.checkForExisting(restaurantName, function(error, exists) {
+      restaurantHelpers.checkForExisting(restaurantName, function(error, exists) {
         if (error) {
           _this._speak('Err... looks like something went wrong. Try again?');
           _this.destroy();
@@ -161,7 +184,7 @@ module.exports = (function() {
           _this._speak('Looks like we\'ve already got that restaurant on the list! For a full list, type: "@lunchy list".');
           _this.destroy();
         } else {
-          Restaurant.create(restaurantName, function(error, body) {
+          restaurantHelpers.create(restaurantName, function(error, body) {
             if (error) {
               _this._speak('Err... looks like something went wrong. Try again?');
               _this.destroy();
@@ -178,7 +201,7 @@ module.exports = (function() {
     _listRestaurants() {
       var _this = this;
 
-      Restaurant.list(function(error, restaurants) {
+      restaurantHelpers.list(function(error, restaurants) {
         if (error) {
           _this._speak('Err... looks like something went wrong. Try again?');
           _this.destroy();
