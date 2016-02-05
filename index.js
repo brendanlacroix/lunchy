@@ -3,7 +3,7 @@
 module.exports = (function() {
   'use strict';
 
-  require('dotenv').config();
+  require('dotenv').config({ silent : true });
 
   const _ = require('lodash');
 
