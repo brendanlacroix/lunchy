@@ -61,11 +61,7 @@ module.exports = (function() {
           options = unrecent;
         }
 
-        console.log(options);
-
         choice = _.sample(options);
-
-        console.log(choice);
 
         callback(null, choice);
       });

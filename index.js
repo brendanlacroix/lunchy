@@ -100,6 +100,7 @@ module.exports = (function() {
           }
 
           console.log('Updated last_visited of', restaurant.id);
+          _this.destroy();
         });
       });
     }
@@ -211,6 +212,7 @@ module.exports = (function() {
         restaurants.sort();
         restaurants = restaurants.join(', ');
         _this._speak(restaurants);
+        _this.destroy();
       });
     }
   }
