@@ -168,7 +168,7 @@ module.exports = (function() {
               return console.error(error);
             }
 
-            _this._speak('Great, ' + model.get('name') + ' has been added!');
+            _this._speak('Great, ' + body.id + ' has been added!');
             _this.destroy();
           });
         }
