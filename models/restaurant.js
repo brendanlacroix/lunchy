@@ -2,8 +2,7 @@ module.exports = (function() {
   'use strict';
 
   /* Database integration */
-  const nano = require('nano')(process.env.COUCHDB_URL);
-  const db = nano.use('restaurants');
+  const db = require('nano')(process.env.COUCHDB_URL);
 
   const Restaurant = {
 
