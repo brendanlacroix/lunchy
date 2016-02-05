@@ -178,7 +178,13 @@ module.exports = (function() {
     _listRestaurants() {
       var _this = this;
 
-      Restaurant.list(function(restaurants) {
+      Restaurant.list(function(error, restaurants) {
+        if (error) {
+          _this._speak('Err... looks like something went wrong. Try again?');
+          _this.destroy();
+          return console.error(error);
+        }
+
         restaurants.sort();
         restaurants = restaurants.join(', ');
         _this._speak(restaurants);

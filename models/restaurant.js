@@ -26,7 +26,11 @@ module.exports = (function() {
 
     list : function(callback) {
       db.list({ include_docs : true }, function(error, body) {
-        callback(body.rows.map(function(doc) {
+        if (error) {
+          return callback(error, null);
+        }
+
+        callback(null, body.rows.map(function(doc) {
           return doc.key;
         }));
       });
