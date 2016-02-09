@@ -21,7 +21,6 @@ module.exports = (function() {
 
   rule.dayOfWeek = 5;
   rule.hour = 12;
-  rule.minute = 00;
 
   job = schedule.scheduleJob(rule, function(){
     let channel;
