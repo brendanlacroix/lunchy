@@ -7,6 +7,8 @@ module.exports = (function() {
 
   const _ = require('lodash');
 
+  const bot = process.env.BOT_NAME;
+
   /* Slack integration */
   const Slack = require('slack-client');
   const token = process.env.SLACK_TOKEN;
@@ -125,7 +127,8 @@ module.exports = (function() {
         console.log('Restaurant found:', this._venues[0].name);
         console.log('Confirming restaurant with', this._username);
 
-        this._speak('Is this it? ' + this._venues[0].name + ' (' + this._venues[0].location.address + ').' + ' Type "@lunchy: yes (or no)"!');
+
+        this._speak('Is this it? ' + this._venues[0].name + ' (' + this._venues[0].location.address + ').' + ' Type "@' + bot + ': yes (or no)"!');
 
         this._findingRestaurant = false;
         this._confirmingRestaurant = true;
@@ -168,7 +171,7 @@ module.exports = (function() {
 
       venueList = venueList.join(' \n');
 
-      this._speak('Dang! Is it one of these? \n' + venueList + '\n (Let me know the number, e.g. "@lunchy 3")');
+      this._speak('Dang! Is it one of these? \n' + venueList + '\n (Let me know the number, e.g. "@' + bot + ' 3")');
     }
 
     _addRestaurant(restaurantName) {
@@ -182,7 +185,7 @@ module.exports = (function() {
         }
 
         if (exists) {
-          _this._speak('Looks like we\'ve already got that restaurant on the list! For a full list, type: "@lunchy list".');
+          _this._speak('Looks like we\'ve already got that restaurant on the list! For a full list, type: "@' + bot + ' list".');
           _this.destroy();
         } else {
           restaurantHelpers.create(restaurantName, function(error, body) {

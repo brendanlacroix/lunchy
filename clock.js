@@ -26,9 +26,13 @@ module.exports = (function() {
     let channel;
 
     slack.on('open', function() {
-      channel = slack.getChannelByName(process.env.AUTO_CHANNEL_NAME);
+      channel = slack.getChannelGroupOrDMByName(process.env.AUTO_CHANNEL_NAME);
 
       restaurantHelpers.pick(function(error, restaurant) {
+        if (error) {
+          return console.error(error);
+        }
+
         channel.send('You\'re going to ' + restaurant.id + '! Woo! (I\'m marking this as visited, so if you don\'t go this week don\'t expect to see it pop up again soon...)');
 
         restaurantHelpers.updateLastVisited(restaurant, function(error, body) {
